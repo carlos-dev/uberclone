@@ -179,8 +179,16 @@ android {
 }
 
 dependencies {
-    implementation project(':react-native-linear-gradient')
+    implementation (project(':react-native-linear-gradient')) {
+        exclude group: 'com.group.android.gms', module: 'play-services-base'
+        exclude group: 'com.group.android.gms', module: 'play-services-maps'
+    }
+
+    implementation 'com.google.android.gms:play-services-base:15.0.1'
+    implementation 'com.google.android.gms:play-services-maps:15.0.1'
+
     implementation project(':react-native-gesture-handler')
+    implementation project(':react-native-maps')
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.facebook.react:react-native:+"  // From node_modules
 
