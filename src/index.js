@@ -1,7 +1,8 @@
 import React, {Component, useState, useEffect} from 'react';
-import {View, Text, ActivityIndicator, StyleSheet} from 'react-native';
+import {View, Text, ActivityIndicator, StyleSheet, PermissionsAndroid} from 'react-native';
 
 import MapView from 'react-native-maps';
+import Geolocation from '@react-native-community/geolocation';
 
 const styles = StyleSheet.create({
   container: {
@@ -14,21 +15,30 @@ const styles = StyleSheet.create({
   map: {
     ...StyleSheet.absoluteFillObject
   }
-})
-
-
+});
 
 export default class App extends Component {
+  constructor(props) {
+    super(props);
+  }
+
   state = {
-    loading: false,
-    coordinates: {
-      latitude: -22.978749,
-      longitude: -43.190878
-    }
+    loading: true,
+    coordinates: ''
+  }
+
+  async componentDidMount() {
+    console.log(this.state)
+    Geolocation.getCurrentPosition(
+      ({coords}) => {
+        console.log(coords)
+        this.setState({coordinates: coords});
+        this.setState({loading: false});
+      }
+    );
   }
 
   render() {    
-    console.log(this.state);
     const {loading, coordinates} = this.state;
 
     return (
@@ -44,8 +54,15 @@ export default class App extends Component {
                 longitudeDelta: 0.0068
               }}
               style={styles.map}
+              showsBuildings={false}
             >
-
+              <MapView.Marker 
+                centerOffset={{ x: -18, y: -60 }}
+                coordinate={{
+                  latitude: coordinates.latitude,
+                  longitude: coordinates.longitude,
+                }}
+              />
             </MapView>
           )}
         </View>
